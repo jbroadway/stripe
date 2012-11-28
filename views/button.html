@@ -1,0 +1,14 @@
+<form action="/stripe/charge" method="post">
+	<input type="hidden" name="amount" value="{{amount|str_replace ('.', '', %s)}}" />
+	<input type="hidden" name="description" value="{{description}}" />
+	<input type="hidden" name="redirect" value="{{redirect}}" />
+	<script
+		src="https://button.stripe.com/v1/button.js"
+		class="stripe-button"
+		data-key="{{publishable_key}}"
+		data-amount="{{amount|str_replace ('.', '', %s)}}"
+		data-description="{{description}}"
+		data-label="{{button}}"
+		{% if address === 'Yes' %}data-address{% end %}
+	></script>
+</form>
