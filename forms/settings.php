@@ -10,6 +10,7 @@ not empty = 1
 
 [charge_handler]
 
-not empty = 1
+skip_if_empty = 1
+regex = "/^[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)+$/"
 
 ; */ ?>

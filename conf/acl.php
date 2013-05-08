@@ -1,0 +1,5 @@
+; <?php /*
+
+stripe = Stripe Payments
+
+; */ ?>

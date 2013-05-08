@@ -5,11 +5,9 @@
  * just redirects to the settings form.
  */
 
-$this->redirect ('/stripe/settings');
+$this->require_acl ('admin', 'stripe');
 
-$this->require_admin ();
-
-$page->title = __ ('Stripe');
+$page->title = __ ('Stripe Payments');
 $page->layout = 'admin';
 
 echo $tpl->render ('stripe/index', array ());

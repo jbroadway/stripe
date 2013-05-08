@@ -13,12 +13,13 @@
 <span class="notice" id="publishable_key-notice">{"You must enter your Stripe publishable key."}</span></p>
 
 <p>{"Charge handler (e.g., myapp/handler)"}:<br />
-<input type="text" name="charge_handler" size="40" value="{{ charge_handler|quotes }}" /></p>
+<input type="text" name="charge_handler" size="40" value="{{ charge_handler|quotes }}" />
+<span class="notice" id="charge_handler-notice">{"You must enter a valid handler name."}</span></p>
 
 <p>
 	<input type="submit" value="{"Save Settings"}" />
 	&nbsp;
-	<a href="/" onclick="return confirm ('{"Are you sure you want to cancel?"}')">{"Cancel"}</a>
+	<a href="/stripe/index" onclick="return confirm ('{"Are you sure you want to cancel?"}')">{"Cancel"}</a>
 </p>
 
 </form>

@@ -4,7 +4,7 @@
  * This is the settings form for the Stripe app.
  */
 
-$this->require_admin ();
+$this->require_acl ('admin', 'stripe');
 
 require_once ('apps/admin/lib/Functions.php');
 
