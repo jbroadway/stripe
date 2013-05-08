@@ -9,6 +9,6 @@ charge_handler = ""
 [Admin]
 
 handler = stripe/index
-name = Stripe
+name = Stripe Payments
 
 ; */ ?>
