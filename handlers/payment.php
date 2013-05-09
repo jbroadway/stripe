@@ -9,9 +9,31 @@
  * Optionally redirects the user, or calls a custom
  * charge handler script, passing it the Stripe_Charge
  * object for the transaction, with an added `payment_id`
- * attribute for retrieving the payment record from the
+ * property for retrieving the payment record from the
  * database.
+ *
+ * Usage:
+ *
+ * In a handler:
+ *
+ *     echo $this->run ('stripe/payment', array (
+ *         'amount' => 1000,
+ *         'description' => 'Test payment',
+ *         'callback' => function ($charge) {
+ *             info ($charge);
+ *         }
+ *     ));
+ *
+ * In a view template, use:
+ *
+ *     {! stripe/payment
+ *        ?amount=1000
+ *        &description=Test payment
+ *        &redirect=/thanks !}
  */
+
+// Verify that they're on an SSL connection
+//$this->force_https ();
 
 // Verify the user is logged in
 $this->require_login ();
@@ -19,17 +41,20 @@ $this->require_login ();
 // Initialize the Stripe app
 $this->run ('stripe/init');
 
+$page->add_script ('<script src="https://js.stripe.com/v2/"></script>');
+$page->add_script ('<script>Stripe.setPublishableKey("' . Appconf::stripe ('Stripe', 'publishable_key') . '");</script>');
+
 $form = new Form ('post', $this);
 
-$form->data = array ('charge_failed' => false);
+$form->data = array_merge ($data, array ('charge_failed' => false));
 
-echo $form->handle (function ($form) use ($page, $tpl) {
+echo $form->handle (function ($form) use ($data, $page, $tpl) {
 	// Get the details submitted by the form
 	$token = $_POST['stripeToken'];
-	$amount = $_POST['amount'];
-	$description = $_POST['description'];
-	$currency = isset ($_POST['currency']) ? $_POST['currency'] : 'usd';
-	$plan = isset ($_POST['plan']) ? $_POST['plan'] : false;
+	$amount = $data['amount'];
+	$description = $data['description'];
+	$currency = Appconf::stripe ('Stripe', 'currency');
+	$plan = isset ($data['plan']) ? $data['plan'] : false;
 
 	// Get the current user and check for a customer ID
 	$user = User::current ();
@@ -76,11 +101,11 @@ echo $form->handle (function ($form) use ($page, $tpl) {
 		$charge = Stripe_Charge::create ($info);
 	} catch (Stripe_CardError $e) {
 		// The card was declined
-		$form->data = array ('charge_failed' => true);
+		$form->data['charge_failed'] = true;
 		return false;
 	} catch (Exception $e) {
 		// Handle error
-		error_log ('Error saving stripe_customer: ' . $user->error);
+		error_log ('Error saving stripe_charge: ' . $e->getMessage ());
 		echo $form->controller->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
 		return;
 	}
@@ -91,27 +116,32 @@ echo $form->handle (function ($form) use ($page, $tpl) {
 		'stripe_id' => $charge->id,
 		'description' => $description,
 		'amount' => $amount,
-		'currency' => $currency,
 		'plan' => $plan ? $plan : '',
 		'ts' => gmdate ('Y-m-d H:i:s')
 	));
 	if (! $p->put ()) {
 		// Handle error
-		error_log ('Error saving payment to database: ' . $user->error);
+		error_log ('Error saving payment to database: ' . $p->error);
 		echo $form->controller->error (500, 'An error occurred', 'Unable to save payment info at this time. Please contact support for assistance.');
 		return;
 	}
 
 	// Redirect if they've provided one
-	if (isset ($_POST['redirect'])) {
-		$form->controller->redirect ($_POST['redirect']);
+	if (isset ($data['redirect'])) {
+		$form->controller->redirect ($data['redirect']);
 	}
 
 	// Send to a charge handler, if set
-	$charge_handler = Appconf::stripe ('Stripe', 'charge_handler');
-	if (! empty ($charge_handler)) {
+	if (isset ($data['callback'])) {
+		if (is_callable ($data['callback'])) {
+			// Treat as a callback
+			$charge->payment_id = $p->id;
+			echo call_user_func ($data['callback'], $charge);
+			return;
+		}
+		// Treat as a handler
 		$charge->payment_id = $p->id;
-		echo $this->run ($charge_handler, $charge);
+		echo $this->run ($data['callback'], $charge);
 		return;
 	}
 

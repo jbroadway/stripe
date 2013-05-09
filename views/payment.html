@@ -1,0 +1,51 @@
+<form method="post" id="{{_form}}">
+
+<p class="payment-errors"></p>
+
+<p>
+	<label>Card Number</label>
+	<input type="text" size="20" data-stripe="number" />
+</p>
+
+<p>
+	<label>CVC</label>
+	<input type="text" size="4" data-stripe="cvc" />
+</p>
+
+<p>
+	<label>Expiration (MM/YYYY)</label>
+	<input type="text" size="2" data-stripe="exp-month" />
+	<span> / </span>
+    <input type="text" size="4" data-stripe="exp-year" />
+</p>
+
+<p><button type="submit">Submit Payment</button></p>
+
+</form>
+
+<script>
+$(function () {
+	var stripe_response_handler = function (status, response) {
+		var $form = $('#{{_form}}');
+		
+		if (response.error) {
+			$form.find ('.payment-errors').text (response.error.message);
+			$form.find ('button').prop ('disabled', false);
+		} else {
+			var token = response.id;
+			$form.append ($('<input type="hidden" name="stripeToken" />').val (token));
+			$form.get (0).submit ();
+		}
+	};
+	
+	$('#{{_form}}').submit (function (event) {
+		var $form = $(this);
+		
+		$form.find ('button').prop ('disabled', true);
+		
+		Stripe.createToken ($form, stripe_response_handler);
+		
+		return false;
+	});
+});
+</script>
