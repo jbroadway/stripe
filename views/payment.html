@@ -1,25 +1,35 @@
 <form method="post" id="{{_form}}">
 
+<p class="payment-summary">
+	<span class="payment-description">{{description}}</span>
+	<span class="payment-amount">${{amount|stripe\Util::money_format}}</span>
+</p>
+
 <p class="payment-errors"></p>
 
 <p>
-	<label>Card Number</label>
-	<input type="text" size="20" data-stripe="number" />
+	<label>{"Card number"}:</label>
+	<input type="text" size="30" data-stripe="number" />
 </p>
 
 <p>
-	<label>CVC</label>
+	<label>{"Name on card"}:</label>
+	<input type="text" size="30" data-stripe="name" />
+</p>
+
+<p>
+	<label>{"Expiration"}:</label>
+	<input type="text" size="2" data-stripe="exp-month" placeholder="mm" />
+	<span> / </span>
+    <input type="text" size="4" data-stripe="exp-year" placeholder="yyyy" />
+</p>
+
+<p>
+	<label>{"CVC"}:</label>
 	<input type="text" size="4" data-stripe="cvc" />
 </p>
 
-<p>
-	<label>Expiration (MM/YYYY)</label>
-	<input type="text" size="2" data-stripe="exp-month" />
-	<span> / </span>
-    <input type="text" size="4" data-stripe="exp-year" />
-</p>
-
-<p><button type="submit">Submit Payment</button></p>
+<p><button type="submit">{"Submit Payment"}</button></p>
 
 </form>
 
@@ -29,7 +39,7 @@ $(function () {
 		var $form = $('#{{_form}}');
 		
 		if (response.error) {
-			$form.find ('.payment-errors').text (response.error.message);
+			$form.find ('.payment-errors').text (response.error.message).show ();
 			$form.find ('button').prop ('disabled', false);
 		} else {
 			var token = response.id;
@@ -49,3 +59,27 @@ $(function () {
 	});
 });
 </script>
+
+<style>
+#{{_form}} label {
+	display: inline-block;
+	min-width: 100px;
+}
+.payment-summary {
+	border: 1px solid #ccc;
+	padding: 8px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+.payment-amount {
+	display: inline-block;
+}
+.payment-amount:before {
+	content: " - ";
+}
+.payment-errors {
+	display: none;
+	color: #a00;
+}
+</style>
