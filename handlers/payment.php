@@ -33,7 +33,7 @@
  */
 
 // Verify that they're on an SSL connection
-$this->force_https ();
+//$this->force_https ();
 
 // Verify the user is logged in
 $this->require_login ();
