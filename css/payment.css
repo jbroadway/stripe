@@ -1,0 +1,21 @@
+.payment-form label {
+	display: inline-block;
+	min-width: 100px;
+}
+
+.payment-summary {
+	font-weight: bold;
+}
+
+.payment-amount {
+	display: inline-block;
+}
+
+.payment-amount:before {
+	content: " - ";
+}
+
+.payment-errors {
+	display: none;
+	color: #a00;
+}

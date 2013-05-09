@@ -1,4 +1,4 @@
-<form method="post" id="{{_form}}">
+<form method="post" id="{{_form}}" class="payment-form">
 
 <p class="payment-summary">
 	<span class="payment-description">{{description}}</span>
@@ -32,54 +32,3 @@
 <p><button type="submit">{"Submit Payment"}</button></p>
 
 </form>
-
-<script>
-$(function () {
-	var stripe_response_handler = function (status, response) {
-		var $form = $('#{{_form}}');
-		
-		if (response.error) {
-			$form.find ('.payment-errors').text (response.error.message).show ();
-			$form.find ('button').prop ('disabled', false);
-		} else {
-			var token = response.id;
-			$form.append ($('<input type="hidden" name="stripeToken" />').val (token));
-			$form.get (0).submit ();
-		}
-	};
-	
-	$('#{{_form}}').submit (function (event) {
-		var $form = $(this);
-		
-		$form.find ('button').prop ('disabled', true);
-		
-		Stripe.createToken ($form, stripe_response_handler);
-		
-		return false;
-	});
-});
-</script>
-
-<style>
-#{{_form}} label {
-	display: inline-block;
-	min-width: 100px;
-}
-.payment-summary {
-	border: 1px solid #ccc;
-	padding: 8px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-}
-.payment-amount {
-	display: inline-block;
-}
-.payment-amount:before {
-	content: " - ";
-}
-.payment-errors {
-	display: none;
-	color: #a00;
-}
-</style>

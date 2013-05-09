@@ -41,11 +41,13 @@ $this->require_login ();
 // Initialize the Stripe app
 $this->run ('stripe/init');
 
+$page->add_style ('/apps/stripe/css/payment.css');
 $page->add_script ('<script src="https://js.stripe.com/v2/"></script>');
 $page->add_script ('<script>Stripe.setPublishableKey("' . Appconf::stripe ('Stripe', 'publishable_key') . '");</script>');
+$page->add_script ('/apps/stripe/js/payment.js');
 
 $form = new Form ('post', $this);
-
+$form->js_validation = false;
 $form->data = array_merge ($data, array ('charge_failed' => false));
 
 echo $form->handle (function ($form) use ($data, $page, $tpl) {
