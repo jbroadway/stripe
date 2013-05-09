@@ -19,6 +19,13 @@ class Util {
 	public static function yes_no () {
 		return array ('No', 'Yes');
 	}
+	
+	/**
+	 * Convert currency into display format.
+	 */
+	public static function money_format ($cents) {
+		return money_format ('%^!n', $cents / 100);
+	}
 }
 
 ?>
