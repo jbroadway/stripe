@@ -6,6 +6,7 @@ create table #prefix#payment (
 	amount int not null,
 	plan char(24) not null,
 	ts datetime not null,
+	ip int not null,
 	index (ts),
 	index (user_id, ts),
 	index (stripe_id, ts)

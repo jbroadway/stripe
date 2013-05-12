@@ -5,7 +5,8 @@ create table #prefix#payment (
 	description char(128) not null,
 	amount int not null,
 	plan char(24) not null,
-	ts datetime not null
+	ts datetime not null,
+	ip int not null
 );
 
 create index #prefix#payment_ts on #prefix#payment (ts);

@@ -119,7 +119,8 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 		'description' => $description,
 		'amount' => $amount,
 		'plan' => $plan ? $plan : '',
-		'ts' => gmdate ('Y-m-d H:i:s')
+		'ts' => gmdate ('Y-m-d H:i:s'),
+		'ip' => ip2long ($_SERVER['REMOTE_ADDR'])
 	));
 	if (! $p->put ()) {
 		// Handle error
