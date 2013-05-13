@@ -33,7 +33,7 @@
  */
 
 // Verify that they're on an SSL connection
-//$this->force_https ();
+$this->force_https ();
 
 // Verify the user is logged in
 $this->require_login ();
@@ -120,7 +120,8 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 		'amount' => $amount,
 		'plan' => $plan ? $plan : '',
 		'ts' => gmdate ('Y-m-d H:i:s'),
-		'ip' => ip2long ($_SERVER['REMOTE_ADDR'])
+		'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
+		'type' => 'payment'
 	));
 	if (! $p->put ()) {
 		// Handle error

@@ -26,6 +26,20 @@ class Util {
 	public static function money_format ($cents) {
 		return money_format ('%^!n', $cents / 100);
 	}
+	
+	/**
+	 * Filter names and show 'None' if empty.
+	 */
+	public static function user_name ($name) {
+		return strlen ($name) ? $name : __ ('None');
+	}
+	
+	/**
+	 * Filter plans and show 'None' if empty.
+	 */
+	public static function plan_name ($name) {
+		return strlen ($name) ? \Appconf::stripe ('Plans', $name) : __ ('None');
+	}
 }
 
 ?>
