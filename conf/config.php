@@ -2,10 +2,32 @@
 
 [Stripe]
 
+; Your Stripe account's publishable key value.
+
 publishable_key = ""
+
+; Your Stripe account's secret key value.
+
 secret_key = ""
+
+; A custom charge handler for the stripe/charge button handler.
+
 charge_handler = ""
+
+; The default currency for payments (e.g., usd, cad, gbp, eur).
+
 currency = usd
+
+[Plans]
+
+; Each plan is an array with a label, amount (in cents), and
+; an interval value (monthly or yearly). The plan key name (not
+; the label) must match a plan you have added to the Stripe
+; admin dashboard.
+
+;basic[label] = Basic
+;basic[amount] = 1000
+;basic[interval] = monthly
 
 [Admin]
 
