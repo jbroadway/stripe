@@ -31,14 +31,35 @@ class Util {
 	 * Filter names and show 'None' if empty.
 	 */
 	public static function user_name ($name) {
-		return strlen ($name) ? $name : __ ('None');
+		if (strlen ($name) === 0) {
+			return __ ('None');
+		}
+		return (strlen ($name) > 15)
+			? substr ($name, 0, 12) . '...'
+			: $name;
 	}
 	
 	/**
 	 * Filter plans and show 'None' if empty.
 	 */
 	public static function plan_name ($name) {
-		return strlen ($name) ? \Appconf::stripe ('Plans', $name) : __ ('None');
+		if (strlen ($name) === 0) {
+			return __ ('None');
+		}
+		$plan = \Appconf::stripe ('Plans', $name);
+		if (! is_array ($plan)) {
+			return $name;
+		}
+		return $plan['label'];
+	}
+	
+	/**
+	 * Filters the description length for display.
+	 */
+	public static function description_length ($desc) {
+		return (strlen ($desc) > 28)
+			? substr ($desc, 0, 25) . '...'
+			: $desc;
 	}
 }
 

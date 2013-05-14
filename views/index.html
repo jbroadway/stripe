@@ -26,7 +26,7 @@
 	</tr>
 {% foreach list %}
 	<tr>
-		<td>{{ loop_value->description }}</a></td>
+		<td title="{{ loop_value->description|quotes }}">{{ loop_value->description|stripe\Util::description_length }}</a></td>
 		<td>{{ loop_value->type|ucfirst }}</a></td>
 		<td>{{ loop_value->plan|stripe\Util::plan_name }}</td>
 		<td>{{ loop_value->user_name|stripe\Util::user_name }}</td>
