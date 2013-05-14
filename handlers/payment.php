@@ -30,6 +30,12 @@
  *        ?amount=1000
  *        &description=Test payment
  *        &redirect=/thanks !}
+ *
+ * For a subscription:
+ *
+ *     {! stripe/payment
+ *        ?plan=pro
+ *        &redirect=/thanks !}
  */
 
 // Verify that they're on an SSL connection
@@ -38,7 +44,7 @@ $this->force_https ();
 // Verify the user is logged in
 $this->require_login ();
 
-// Initialize the Stripe app
+// Initialize the Stripe API
 $this->run ('stripe/init');
 
 $page->add_style ('/apps/stripe/css/payment.css');
@@ -48,6 +54,17 @@ $page->add_script ('/apps/stripe/js/payment.js');
 
 $form = new Form ('post', $this);
 $form->js_validation = false;
+if (isset ($data['plan'])) {
+	$details = Appconf::stripe ('Plans', $data['plan']);
+	if (! is_array ($details)) {
+		error_log ('Error: Invalid plan name (' . $data['plan'] . ') or the plans may be misconfigured.');
+		echo $this->error (500, 'An error occurred', 'We are unable to complete your request at this time.');
+		return;
+	}
+	$data['description'] = $details['label'];
+	$data['amount'] = $details['amount'];
+	$data['interval'] = $details['interval'];
+}
 $form->data = array_merge ($data, array ('charge_failed' => false));
 
 echo $form->handle (function ($form) use ($data, $page, $tpl) {
@@ -57,6 +74,17 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 	$description = $data['description'];
 	$currency = Appconf::stripe ('Stripe', 'currency');
 	$plan = isset ($data['plan']) ? $data['plan'] : false;
+	$interval = false;
+	if ($plan) {
+		$details = Appconf::stripe ('Plans', $plan);
+		if (! is_array ($details)) {
+			error_log ('Error: Invalid plan name (' . $plan . ') or the plans may be misconfigured.');
+			echo $form->controller->error (500, 'An error occurred', 'We are unable to complete your request at this time.');
+			return;
+		}
+		$description = $details['label'];
+		$amount = $details['amount'];
+	}
 
 	// Get the current user and check for a customer ID
 	$user = User::current ();
