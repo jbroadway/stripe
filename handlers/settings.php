@@ -10,6 +10,8 @@ require_once ('apps/admin/lib/Functions.php');
 
 $page->layout = 'admin';
 $page->title = __ ('Stripe Settings');
+$page->add_script ('/js/json2.js');
+$page->add_script ('/apps/stripe/js/plans.js');
 
 $form = new Form ('post', $this);
 
@@ -17,7 +19,8 @@ $form->data = array (
 	'secret_key' => $appconf['Stripe']['secret_key'],
 	'publishable_key' => $appconf['Stripe']['publishable_key'],
 	'charge_handler' => $appconf['Stripe']['charge_handler'],
-	'currency' => $appconf['Stripe']['currency']
+	'currency' => $appconf['Stripe']['currency'],
+	'plans' => $appconf['Plans']
 );
 
 echo $form->handle (function ($form) {
@@ -28,7 +31,8 @@ echo $form->handle (function ($form) {
 				'publishable_key' => $_POST['publishable_key'],
 				'charge_handler' => $_POST['charge_handler'],
 				'currency' => strtolower ($_POST['currency'])
-			)
+			),
+			'Plans' => json_decode ($_POST['plans'])
 		),
 		'conf/app.stripe.' . ELEFANT_ENV . '.php'
 	)) {

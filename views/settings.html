@@ -20,6 +20,21 @@
 <input type="text" name="charge_handler" size="40" value="{{ charge_handler|quotes }}" />
 <span class="notice" id="charge_handler-notice">{"You must enter a valid handler name."}</span></p>
 
+<h4>{"Subscription Plans"}</h4>
+
+<input type="hidden" name="plans" id="plans" value="{{ plans|json_encode|quotes }}" />
+
+<p><a href="#" id="add-plan">{"Add plan"}</a></p>
+
+<div id="plan-list">
+</div>
+
+<script>
+$(function () {
+	plans.init ({{ plans|json_encode }});
+});
+</script>
+
 <p>
 	<input type="submit" value="{"Save Settings"}" />
 	&nbsp;
