@@ -63,7 +63,7 @@ From a view template, you can include a payment button via the following tag:
 !}
 ```
 
-## Creating a custom charge handler
+### Creating a custom charge handler
 
 After creating the charge via the `stripe/button` handler, the app can call a
 custom charge handler script that you set in the Stripe Payments settings form.
