@@ -16,7 +16,8 @@ $form = new Form ('post', $this);
 $form->data = array (
 	'secret_key' => $appconf['Stripe']['secret_key'],
 	'publishable_key' => $appconf['Stripe']['publishable_key'],
-	'charge_handler' => $appconf['Stripe']['charge_handler']
+	'charge_handler' => $appconf['Stripe']['charge_handler'],
+	'currency' => $appconf['Stripe']['currency']
 );
 
 echo $form->handle (function ($form) {
@@ -25,7 +26,8 @@ echo $form->handle (function ($form) {
 			'Stripe' => array (
 				'secret_key' => $_POST['secret_key'],
 				'publishable_key' => $_POST['publishable_key'],
-				'charge_handler' => $_POST['charge_handler']
+				'charge_handler' => $_POST['charge_handler'],
+				'currency' => strtolower ($_POST['currency'])
 			)
 		),
 		'conf/app.stripe.' . ELEFANT_ENV . '.php'

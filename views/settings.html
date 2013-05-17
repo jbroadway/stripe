@@ -12,6 +12,10 @@
 <input type="text" name="publishable_key" size="40" value="{{ publishable_key|quotes }}" />
 <span class="notice" id="publishable_key-notice">{"You must enter your Stripe publishable key."}</span></p>
 
+<p>{"Currency (e.g., usd, cad, gbp)"}:<br />
+<input type="text" name="currency" size="6" value="{{ currency|quotes }}" />
+<span class="notice" id="currency-notice">{"You must enter a valid currency code."}</span></p>
+
 <p>{"Charge handler (e.g., myapp/handler)"}:<br />
 <input type="text" name="charge_handler" size="40" value="{{ charge_handler|quotes }}" />
 <span class="notice" id="charge_handler-notice">{"You must enter a valid handler name."}</span></p>
