@@ -75,6 +75,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 	$currency = Appconf::stripe ('Stripe', 'currency');
 	$plan = isset ($data['plan']) ? $data['plan'] : false;
 	$interval = false;
+
 	if ($plan) {
 		$details = Appconf::stripe ('Plans', $plan);
 		if (! is_array ($details)) {
@@ -92,12 +93,16 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 
 	if (! $customer_id) {
 		// Create a customer with Stripe
+		$info = array (
+			'card' => $token,
+			'email' => $user->email,
+			'description' => sprintf ('%d: %s', $user->id, $user->name)
+		);
+		if ($plan) {
+			$info['plan'] = $plan;
+		}
 		try {
-			$customer = Stripe_Customer::create (array (
-				'card' => $token,
-				'email' => $user->email,
-				'description' => sprintf ('%d: %s', $user->id, $user->name)
-			));
+			$customer = Stripe_Customer::create ($info);
 		} catch (Exception $e) {
 			// Handle error
 			error_log ('Error calling Stripe_Customer::create(): ' . $e->getMessage ());
@@ -115,47 +120,77 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 		}
 
 		$customer_id = $customer->id;
+	} else {
+		try {
+			$customer = Stripe_Customer::retrieve ($customer_id);
+
+			if ($plan) {
+				$customer->updateSubscription (array ('plan' => $plan));
+			}
+		} catch (Exception $e) {
+			// Handle error
+			error_log ('Error calling Stripe_Customer::retrieve(): ' . $e->getMessage ());
+			echo $form->controller->error (500, 'An error occurred', 'Unable to retrieve customer info at this time. Please try again later.');
+			return;
+		}
 	}
 
 	// Charge the customer
-	try {
-		$info = array (
-			'amount' => $amount, // In cents, e.g., 1000 = $10.00
-			'currency' => $currency,
-			'customer' => $customer_id,
-			'description' => $description
-		);
-		if ($plan) {
-			$info['plan'] = $plan;
+	if (! $plan) {
+		try {
+			$info = array (
+				'amount' => $amount, // In cents, e.g., 1000 = $10.00
+				'currency' => $currency,
+				'customer' => $customer_id,
+				'description' => $description
+			);
+			$charge = Stripe_Charge::create ($info);
+		} catch (Stripe_CardError $e) {
+			// The card was declined
+			$form->data['charge_failed'] = true;
+			return false;
+		} catch (Exception $e) {
+			// Handle error
+			error_log ('Error saving stripe_charge: ' . $e->getMessage ());
+			echo $form->controller->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
+			return;
 		}
-		$charge = Stripe_Charge::create ($info);
-	} catch (Stripe_CardError $e) {
-		// The card was declined
-		$form->data['charge_failed'] = true;
-		return false;
-	} catch (Exception $e) {
-		// Handle error
-		error_log ('Error saving stripe_charge: ' . $e->getMessage ());
-		echo $form->controller->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
-		return;
-	}
-
-	// Save the payment
-	$p = new stripe\Payment (array (
-		'user_id' => $user->id,
-		'stripe_id' => $charge->id,
-		'description' => $description,
-		'amount' => $amount,
-		'plan' => $plan ? $plan : '',
-		'ts' => gmdate ('Y-m-d H:i:s'),
-		'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
-		'type' => 'payment'
-	));
-	if (! $p->put ()) {
-		// Handle error
-		error_log ('Error saving payment to database: ' . $p->error);
-		echo $form->controller->error (500, 'An error occurred', 'Unable to save payment info at this time. Please contact support for assistance.');
-		return;
+		
+		// Save the payment
+		$p = new stripe\Payment (array (
+			'user_id' => $user->id,
+			'stripe_id' => $charge->id,
+			'description' => $description,
+			'amount' => $amount,
+			'plan' => '',
+			'ts' => gmdate ('Y-m-d H:i:s'),
+			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
+			'type' => 'payment'
+		));
+		if (! $p->put ()) {
+			// Handle error
+			error_log ('Error saving payment to database: ' . $p->error);
+			echo $form->controller->error (500, 'An error occurred', 'Unable to save payment info at this time. Please contact support for assistance.');
+			return;
+		}
+	} else {
+		// Save the transaction
+		$p = new stripe\Payment (array (
+			'user_id' => $user->id,
+			'stripe_id' => $customer_id,
+			'description' => $description,
+			'amount' => $amount,
+			'plan' => $plan,
+			'ts' => gmdate ('Y-m-d H:i:s'),
+			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
+			'type' => 'subscription'
+		));
+		if (! $p->put ()) {
+			// Handle error
+			error_log ('Error saving payment to database: ' . $p->error);
+			echo $form->controller->error (500, 'An error occurred', 'Unable to save payment info at this time. Please contact support for assistance.');
+			return;
+		}
 	}
 
 	// Redirect if they've provided one
@@ -165,14 +200,20 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 
 	// Send to a charge handler, if set
 	if (isset ($data['callback'])) {
+		if ($plan) {
+			// Charge is actually customer
+			$charge = $customer;
+		}
+
+		// Add the payment ID to the charge object
+		$charge->payment_id = $p->id;
+
 		if (is_callable ($data['callback'])) {
 			// Treat as a callback
-			$charge->payment_id = $p->id;
 			echo call_user_func ($data['callback'], $charge);
 			return;
 		}
 		// Treat as a handler
-		$charge->payment_id = $p->id;
 		echo $this->run ($data['callback'], $charge);
 		return;
 	}

@@ -51,6 +51,9 @@ if (! $p->put ()) {
 	return;
 }
 
+// Add the payment ID to the charge object
+$charge->payment_id = $p->id;
+
 // Redirect if they've provided one
 if (isset ($_POST['redirect'])) {
 	$this->redirect ($_POST['redirect']);
