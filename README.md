@@ -70,3 +70,45 @@ custom charge handler script that you set in the Stripe Payments settings form.
 This script will receive an array version of the `Stripe_Charge` object returned
 from calling `Stripe_Charge::create()`, which you can then use to take action
 on new payments in your app, such as offering a digital file download.
+
+The object will also contain a custom `payment_id` field that can be used to
+retrieve the `stripe\Payment` object for the transaction.
+
+To ensure your charge handler is secure, here is a sample script outline:
+
+```php
+<?php
+
+if (! $this->internal) return $this->error ();
+
+info ($data);
+
+?>
+```
+
+### Creating a custom webhooks handler
+
+Stripe can be configured to send notifications back to your site whenever an event
+occurs, such as refunding a payment, or creating a new customer account. You can
+set the webhooks handler in the Stripe Payments settings form. This script will
+receive an array version of the `Stripe_Event` object returned from calling
+`Stripe_Event::retrieve()`, which you can then use to take action on the event
+that occurred, such as logging activity or disabling accounts after too many
+failed billing attempts.
+
+To ensure your webhooks handler is secure, here is a sample script outline:
+
+```php
+<?php
+
+if (! $this->internal) return $this->error ();
+
+info ($data);
+
+?>
+```
+
+Note that you will also have to set your webhooks handler in your Stripe dashboard.
+Set it to the following URL (adjusted for your own domain):
+
+    https://www.example.com/stripe/webhook

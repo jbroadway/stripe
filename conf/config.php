@@ -14,6 +14,10 @@ secret_key = ""
 
 charge_handler = ""
 
+; A custom handler for processing the stripe/webhook events.
+
+webhook_handler = ""
+
 ; The default currency for payments (e.g., usd, cad, gbp, eur).
 
 currency = usd
@@ -25,9 +29,13 @@ currency = usd
 ; the label) must match a plan you have added to the Stripe
 ; admin dashboard.
 
-;basic[label] = Basic
-;basic[amount] = 1000
-;basic[interval] = monthly
+basic[label] = Basic
+basic[amount] = 1000
+basic[interval] = monthly
+
+pro[label] = Pro
+pro[amount] = 2500
+pro[interval] = monthly
 
 [Admin]
 

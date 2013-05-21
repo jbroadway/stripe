@@ -19,6 +19,7 @@ $form->data = array (
 	'secret_key' => $appconf['Stripe']['secret_key'],
 	'publishable_key' => $appconf['Stripe']['publishable_key'],
 	'charge_handler' => $appconf['Stripe']['charge_handler'],
+	'webhook_handler' => $appconf['Stripe']['webhook_handler'],
 	'currency' => $appconf['Stripe']['currency'],
 	'plans' => $appconf['Plans']
 );
@@ -30,6 +31,7 @@ echo $form->handle (function ($form) {
 				'secret_key' => $_POST['secret_key'],
 				'publishable_key' => $_POST['publishable_key'],
 				'charge_handler' => $_POST['charge_handler'],
+				'webhook_handler' => $_POST['webhook_handler'],
 				'currency' => strtolower ($_POST['currency'])
 			),
 			'Plans' => json_decode ($_POST['plans'])

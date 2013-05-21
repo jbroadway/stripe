@@ -13,6 +13,11 @@ not empty = 1
 skip_if_empty = 1
 regex = "/^[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)+$/"
 
+[webhook_handler]
+
+skip_if_empty = 1
+regex = "/^[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)+$/"
+
 [currency]
 
 not empty = 1
