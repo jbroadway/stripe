@@ -24,11 +24,11 @@ try {
 	));
 } catch (Stripe_CardError $e) {
 	// The card was declined
-	echo $this->error (, 'Card declined', 'Your card was declined. Please go back and verify your information.');
+	echo $this->error (412, 'Card declined', 'Your card was declined. Please go back and verify your information.');
 	return;
 } catch (Exception $e) {
 	// Handle error
-	error_log ('Error saving stripe_charge: ' . $e->getMessage ();
+	error_log ('Error saving stripe_charge: ' . $e->getMessage ());
 	echo $this->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
 	return;
 }
@@ -51,17 +51,20 @@ if (! $p->put ()) {
 	return;
 }
 
-// Add the payment ID to the charge object
-$charge->payment_id = $p->id;
-
 // Redirect if they've provided one
-if (isset ($_POST['redirect'])) {
+if (isset ($_POST['redirect']) && strlen ($_POST['redirect']) !== 0) {
 	$this->redirect ($_POST['redirect']);
 }
 
 // Send to a charge handler, if set
 if (! empty ($appconf['Stripe']['charge_handler'])) {
-	echo $this->run ($appconf['Stripe']['charge_handler'], $charge);
+	echo $this->run (
+		$appconf['Stripe']['charge_handler'],
+		array (
+			'charge' => $charge,
+			'payment' => $p
+		)
+	);
 	return;
 }
 

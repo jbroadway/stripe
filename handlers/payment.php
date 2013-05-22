@@ -8,9 +8,8 @@
  *
  * Optionally redirects the user, or calls a custom
  * charge handler script, passing it the Stripe_Charge
- * object for the transaction, with an added `payment_id`
- * property for retrieving the payment record from the
- * database.
+ * object for the transaction, and the stripe\Payment
+ * model object.
  *
  * Usage:
  *
@@ -19,8 +18,9 @@
  *     echo $this->run ('stripe/payment', array (
  *         'amount' => 1000,
  *         'description' => 'Test payment',
- *         'callback' => function ($charge) {
+ *         'callback' => function ($charge, $payment) {
  *             info ($charge);
+ *             info ($payment);
  *         }
  *     ));
  *
@@ -205,16 +205,19 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 			$charge = $customer;
 		}
 
-		// Add the payment ID to the charge object
-		$charge->payment_id = $p->id;
-
 		if (is_callable ($data['callback'])) {
 			// Treat as a callback
-			echo call_user_func ($data['callback'], $charge);
+			echo call_user_func ($data['callback'], $charge, $p);
 			return;
 		}
 		// Treat as a handler
-		echo $this->run ($data['callback'], $charge);
+		echo $this->run (
+			$data['callback'],
+			array (
+				'charge' => $charge,
+				'payment' => $p
+			)
+		);
 		return;
 	}
 

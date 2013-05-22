@@ -29,7 +29,12 @@ try {
 }
 
 if (! empty ($appconf['Stripe']['webhook_handler'])) {
-	echo $this->run ($appconf['Stripe']['webhook_handler'], $event);
+	echo $this->run (
+		$appconf['Stripe']['webhook_handler'],
+		array (
+			'event' => $event
+		)
+	);
 }
 
 ?>
