@@ -10,7 +10,11 @@ building one.
 
 **Status: Beta**
 
-Missing: Plan management in Tools > Stripe Payments > Settings.
+To do:
+
+* Plan management in Tools > Stripe Payments > Settings
+* If user has an existing Stripe customer ID, show option in `stripe\payment`
+  to use that card or enter a new one
 
 ## Installation
 
