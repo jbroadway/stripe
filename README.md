@@ -8,6 +8,10 @@ custom applications.
 Note that this app is not a shopping cart, but could easily be the basis for
 building one.
 
+**Status: Beta**
+
+Missing: Plan management in Tools > Stripe Payments > Settings.
+
 ## Installation
 
 First, you will need to register for [Stripe](https://stripe.com/). This takes
@@ -62,6 +66,45 @@ From a view template, you can include a payment button via the following tag:
 	&redirect=/thanks
 !}
 ```
+
+### Creating a member payment or subscription form
+
+To create a payment form for site members, run the `stripe/payment`
+handler like this:
+
+```php
+<?php
+
+echo $this->run ('stripe/payment', array (
+	'amount' => 1000 // in cents
+	'description' => 'eBook: Become a master prankster',
+	'callback' => function ($charge, $payment) {
+		info ($charge);
+		info ($payment);
+	}
+));
+
+?>
+```
+
+To create a subscription form, run the `stripe/payment` handler like this:
+
+```php
+<?php
+
+echo $this->run ('stripe/payment', array (
+	'plan' => 'basic',
+	'callback' => function ($customer, $payment) {
+		info ($customer);
+		info ($payment);
+	}
+));
+
+?>
+```
+
+The plan name should correspond to a plan you've created in your Stripe dashboard
+and in your Stripe settings.
 
 ### Creating a custom charge handler
 
