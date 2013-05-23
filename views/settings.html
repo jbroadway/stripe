@@ -1,4 +1,5 @@
 {! admin/util/fontawesome !}
+{! admin/util/modal !}
 
 <div class="form">
 
@@ -64,20 +65,24 @@ $(function () {
 <script type="text/html" id="plan-form-template">
 	<p>
 		<label>{"Plan ID"}</label><br />
-		<input type="text" data-plan="{{plan}}" placeholder="Plan ID, e.g., basic" />
+		<input type="text" id="plan-id" value="{{plan}}" placeholder="e.g., pro" />
 	</p>
 	<p>
 		<label>{"Plan name"}</label><br />
-		<input type="text" data-label="{{label}}" placeholder="Plan name, e..g, Basic plan" />
+		<input type="text" id="plan-label" value="{{label}}" placeholder="e.g., Professional" />
 	</p>
 	<p>
 		<label>{"Amount (in cents)"}:</label><br />
-		<input type="text" data-amount="{{amount}}" placeholder="Amount" />
+		<input type="text" id="plan-amount" value="{{amount}}" placeholder="e.g., 2500" />
 	</p>
 	<p>
 		<label>{"Repeats"}:</label><br />
-		<select class="plan-interval" data-interval="monthly">
+		<select id="plan-interval">
 			<option value="monthly">{"monthly"}</option>
+			<option value="yearly">{"yearly"}</option>
 		</select>
+	</p>
+	<p>
+		<input type="submit" id="plan-submit" value="{"Add plan"}" />
 	</p>
 </script>
