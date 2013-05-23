@@ -12,6 +12,9 @@ var plans = (function ($) {
 	self.init = function (plans) {
 		self.plans = plans;
 
+		self.form = Handlebars.compile ($('#plan-form-template').html ());
+		self.tpl = Handlebars.compile ($('#plan-template').html ());
+
 		$('#add-plan').click (self.add_plan);
 		$('#plan-list').on ('click', '.remove-plan', self.remove_plan);
 		$('#plan-list').on ('blur', 'input[type="text"]', self.update);
@@ -19,10 +22,17 @@ var plans = (function ($) {
 
 	self.add_plan = function (event) {
 		event.preventDefault ();
+		$('#plan-list').append (self.tpl ({
+			plan: 'basic',
+			label: 'Basic',
+			amount: (1500/100).toFixed (2),
+			interval: 'monthly'
+		}));
 	};
 
 	self.remove_plan = function (event) {
 		event.preventDefault ();
+		$('#plan-' + $(this).data ('id')).remove ();
 	};
 
 	self.update = function (event) {

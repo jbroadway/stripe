@@ -11,6 +11,7 @@ require_once ('apps/admin/lib/Functions.php');
 $page->layout = 'admin';
 $page->title = __ ('Stripe Settings');
 $page->add_script ('/js/json2.js');
+$page->add_script ('/apps/stripe/js/handlebars-1.0.rc.1.js');
 $page->add_script ('/apps/stripe/js/plans.js');
 
 $form = new Form ('post', $this);

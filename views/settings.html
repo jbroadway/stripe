@@ -1,3 +1,5 @@
+{! admin/util/fontawesome !}
+
 <div class="form">
 
 <form method="post" id="{{_form}}">
@@ -16,6 +18,8 @@
 <input type="text" name="currency" size="6" value="{{ currency|quotes }}" />
 <span class="notice" id="currency-notice">{"You must enter a valid currency code."}</span></p>
 
+<h4>{"Customer handlers"}</h4>
+
 <p>{"Charge handler (e.g., myapp/handler)"}:<br />
 <input type="text" name="charge_handler" size="40" value="{{ charge_handler|quotes }}" />
 <span class="notice" id="charge_handler-notice">{"You must enter a valid handler name."}</span></p>
@@ -28,16 +32,10 @@
 
 <input type="hidden" name="plans" id="plans" value="{{ plans|json_encode|quotes }}" />
 
-<p><a href="#" id="add-plan">{"Add plan"}</a></p>
-
-<div id="plan-list">
+<div id="plan-list" style="margin-bottom: 15px">
 </div>
 
-<script>
-$(function () {
-	plans.init ({{ plans|json_encode }});
-});
-</script>
+<p><a href="#" id="add-plan">{"Add plan"}</a></p>
 
 <p>
 	<input type="submit" value="{"Save Settings"}" />
@@ -48,3 +46,38 @@ $(function () {
 </form>
 
 </div>
+
+<script>
+$(function () {
+	plans.init ({{ plans|json_encode }});
+});
+</script>
+
+<script type="text/html" id="plan-template">
+	<div id="plan-\{{plan}}">
+		<a href="#" class="remove-plan" data-id="\{{plan}}" title="{"Remove plan"}"><i class="icon-remove"></i></a>
+		&nbsp;
+		\{{label}} - $\{{amount}} / \{{interval}}
+	</div>
+</script>
+
+<script type="text/html" id="plan-form-template">
+	<p>
+		<label>{"Plan ID"}</label><br />
+		<input type="text" data-plan="{{plan}}" placeholder="Plan ID, e.g., basic" />
+	</p>
+	<p>
+		<label>{"Plan name"}</label><br />
+		<input type="text" data-label="{{label}}" placeholder="Plan name, e..g, Basic plan" />
+	</p>
+	<p>
+		<label>{"Amount (in cents)"}:</label><br />
+		<input type="text" data-amount="{{amount}}" placeholder="Amount" />
+	</p>
+	<p>
+		<label>{"Repeats"}:</label><br />
+		<select class="plan-interval" data-interval="monthly">
+			<option value="monthly">{"monthly"}</option>
+		</select>
+	</p>
+</script>
