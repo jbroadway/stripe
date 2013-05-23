@@ -54,6 +54,29 @@ $page->add_script ('/apps/stripe/js/payment.js');
 
 $form = new Form ('post', $this);
 $form->js_validation = false;
+
+// Get the current user and check for a customer ID
+$user = User::current ();
+$customer_id = $user->ext ('stripe_customer');
+if ($customer_id) {
+	try {
+		$customer = Stripe_Customer::retrieve ($customer_id);
+	} catch (Exception $e) {
+		// Handle error
+		error_log ('Error calling Stripe_Customer::retrieve(): ' . $e->getMessage ());
+		echo $this->error (500, 'An error occurred', 'Unable to retrieve customer info at this time. Please try again later.');
+		return;
+	}
+	if (isset ($customer->active_card)) {
+		$data['customer'] = true;
+		$data['cc_last4'] = $customer->active_card->last4;
+		$data['cc_type'] = $customer->active_card->type;
+	}
+} else {
+	$customer = null;
+	$data['customer'] = false;
+}
+
 if (isset ($data['plan'])) {
 	$details = Appconf::stripe ('Plans', $data['plan']);
 	if (! is_array ($details)) {
@@ -67,9 +90,23 @@ if (isset ($data['plan'])) {
 }
 $form->data = array_merge ($data, array ('charge_failed' => false));
 
-echo $form->handle (function ($form) use ($data, $page, $tpl) {
+echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, $customer_id) {
 	// Get the details submitted by the form
-	$token = $_POST['stripeToken'];
+	$existing = (isset ($_POST['existing']) && $_POST['existing'] == 'yes') ? true : false;
+	$token = isset ($_POST['stripeToken']) ? $_POST['stripeToken'] : false;
+
+	// Update payment info if necessary
+	if ($token && ! $existing && $customer_id) {
+		try {
+			$customer->card = $token;
+			$customer->save ();
+		} catch (Exception $e) {
+			error_log ('Error saving new payment info: ' . $e->getMessage ());
+			echo $this->error (500, 'An error occurred', 'Unable to update payment info at this time. Please try again later.');
+			return;
+		}
+	}
+
 	$amount = $data['amount'];
 	$description = $data['description'];
 	$currency = Appconf::stripe ('Stripe', 'currency');
@@ -86,10 +123,6 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 		$description = $details['label'];
 		$amount = $details['amount'];
 	}
-
-	// Get the current user and check for a customer ID
-	$user = User::current ();
-	$customer_id = $user->ext ('stripe_customer');
 
 	if (! $customer_id) {
 		// Create a customer with Stripe
@@ -122,8 +155,6 @@ echo $form->handle (function ($form) use ($data, $page, $tpl) {
 		$customer_id = $customer->id;
 	} else {
 		try {
-			$customer = Stripe_Customer::retrieve ($customer_id);
-
 			if ($plan) {
 				$customer->updateSubscription (array ('plan' => $plan));
 			}

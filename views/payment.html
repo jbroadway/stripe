@@ -9,6 +9,18 @@
 
 <p class="payment-errors"></p>
 
+{% if customer %}
+<p>
+	<input type="radio" name="existing" value="yes" checked />
+	<label>{"Use existing card"} (**** **** **** {{cc_last4}} - {{cc_type}})</label>
+</p>
+
+<p>
+	<input type="radio" name="existing" value="no" />
+	<label>{"Use a new card"}:</label>
+</p>
+{% end %}
+
 <p>
 	<label>{"Card number"}:</label>
 	<input type="text" size="30" data-stripe="number" />

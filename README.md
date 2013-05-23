@@ -13,8 +13,10 @@ building one.
 To do:
 
 * Plan management in Tools > Stripe Payments > Settings
-* If user has an existing Stripe customer ID, show option in `stripe\payment`
-  to use that card or enter a new one
+* Additional helpers or examples:
+  * Cancel subscription
+  * Metered billing, one-time charges, and per-user pricing
+  * Responding to failed payments
 
 ## Installation
 

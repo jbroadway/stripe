@@ -14,6 +14,11 @@ $(function () {
 	
 	$('.payment-form').submit (function (event) {
 		var $form = $(this);
+
+		if ($form.get (0).elements.existing.value == 'yes') {
+			$form.get (0).submit ();
+			return false;
+		}
 		
 		$form.find ('button').prop ('disabled', true);
 		
