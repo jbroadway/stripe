@@ -12,7 +12,6 @@ building one.
 
 To do:
 
-* Plan management in Tools > Stripe Payments > Settings
 * Additional helpers or examples:
   * Cancel subscription
   * Metered billing, one-time charges, and per-user pricing
