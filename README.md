@@ -8,9 +8,7 @@ custom applications.
 Note that this app is not a shopping cart, but could easily be the basis for
 building one.
 
-**Status: Beta**
-
-To do:
+#### To do:
 
 * Additional helpers or examples:
   * Cancel subscription
