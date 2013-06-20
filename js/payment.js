@@ -13,9 +13,10 @@ $(function () {
 	};
 	
 	$('.payment-form').submit (function (event) {
-		var $form = $(this);
+		var $form = $(this),
+			elements = $form.get (0).elements;
 
-		if ($form.get (0).elements.existing.value == 'yes') {
+		if (elements.hasOwnProperty ('existing') && elements.existing.value == 'yes') {
 			$form.get (0).submit ();
 			return false;
 		}
