@@ -4,6 +4,7 @@
     "description": "Stripe payments integration for the Elefant CMS",
     "keywords": ["payments", "ecommerce", "stripe", "payment processing", "subscriptions", "elefant", "cms", "app"],
     "license": "MIT",
+    "version": "1.0.0",
 	"authors": [
 		{
 			"name": "Johnny Broadway",

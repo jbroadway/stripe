@@ -2,7 +2,7 @@
     "type":         "app",
     "folder":       "stripe",
     "name":         "Stripe",
-    "version":      "0.9.0",
+    "version":      "1.0.0",
     "website":      "http://www.elefantcms.com/",
     "repository":   "git://github.com/jbroadway/stripe.git",
     "author": {
