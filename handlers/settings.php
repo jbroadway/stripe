@@ -26,19 +26,18 @@ $form->data = array (
 );
 
 echo $form->handle (function ($form) {
-	if (! Ini::write (
-		array (
-			'Stripe' => array (
-				'secret_key' => $_POST['secret_key'],
-				'publishable_key' => $_POST['publishable_key'],
-				'charge_handler' => $_POST['charge_handler'],
-				'webhook_handler' => $_POST['webhook_handler'],
-				'currency' => strtolower ($_POST['currency'])
-			),
-			'Plans' => json_decode ($_POST['plans'])
+	$settings = Appconf::merge ('stripe', array (
+		'Stripe' => array (
+			'secret_key' => $_POST['secret_key'],
+			'publishable_key' => $_POST['publishable_key'],
+			'charge_handler' => $_POST['charge_handler'],
+			'webhook_handler' => $_POST['webhook_handler'],
+			'currency' => strtolower ($_POST['currency'])
 		),
-		'conf/app.stripe.' . ELEFANT_ENV . '.php'
-	)) {
+		'Plans' => json_decode ($_POST['plans'])
+	));
+
+	if (! Ini::write ($settings, 'conf/app.stripe.' . ELEFANT_ENV . '.php')) {
 		printf ('<p>%s</p>', __ ('Unable to save changes. Check your folder permissions and try again.'));
 		return;
 	}
