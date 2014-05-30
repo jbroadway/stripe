@@ -30,6 +30,13 @@ Once you're signed up, the easiest way to install the app is:
 https://github.com/jbroadway/stripe/archive/master.zip
 ```
 
+Alternately, you can run the following from the command line:
+
+```bash
+cd /path/to/your/site
+./elefant install https://github.com/jbroadway/stripe/archive/master.zip
+```
+
 ## Usage
 
 ### Configuring the app
@@ -69,6 +76,8 @@ From a view template, you can include a payment button via the following tag:
 	&redirect=/thanks
 !}
 ```
+
+> Adding `%d` to the redirect value will insert the payment ID into the URL at that place.
 
 ### Creating a member payment or subscription form
 
