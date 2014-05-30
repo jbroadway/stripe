@@ -9,6 +9,6 @@
 		data-amount="{{amount|str_replace ('.', '', %s)}}"
 		data-description="{{description}}"
 		data-label="{{button}}"
-		{% if address === 'Yes' %}data-address{% end %}
+		{% if address === 'Yes' %}data-shipping-address="true"{% end %}
 	></script>
 </form>

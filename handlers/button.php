@@ -8,7 +8,7 @@ $this->run ('stripe/init');
 
 $data['publishable_key'] = $appconf['Stripe']['publishable_key'];
 $data['button'] = isset ($data['button']) ? $data['button'] : 'Pay';
-$data['address'] = isset ($data['address']) ? $data['address'] : 'no';
+$data['address'] = isset ($data['address']) ? $data['address'] : 'No';
 
 echo $tpl->render ('stripe/button', $data);
 

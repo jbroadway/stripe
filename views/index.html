@@ -31,7 +31,7 @@
 		<td title="{{ loop_value->description|quotes }}">{{ loop_value->description|stripe\Util::description_length }}</a></td>
 		<td>{{ loop_value->type|ucfirst }}</a></td>
 		<td>{{ loop_value->plan|stripe\Util::plan_name }}</td>
-		<td>{{ loop_value->user_name|stripe\Util::user_name }}</td>
+		<td><a href="mailto:{{ loop_value->email }}">{{ loop_value->user_name|stripe\Util::user_name }}</a></td>
 		<td>{{ loop_value->ip|long2ip }}</td>
 		<td>{{ loop_value->ts|I18n::date_time }}</td>
 		<td style="text-align: right">${{ loop_value->amount|stripe\Util::money_format}}</td>

@@ -9,7 +9,7 @@
  */
 
 // Verify that they're on an SSL connection
-$this->force_https ();
+//$this->force_https ();
 
 // Initialize the Stripe API
 $this->run ('stripe/init');
@@ -33,16 +33,23 @@ try {
 	return;
 }
 
+if (User::require_login ()) {
+	$user_id = User::val ('id');
+} else {
+	$user_id = 0;
+}
+
 // Save the payment
 $p = new stripe\Payment (array (
-	'user_id' => 0,
+	'user_id' => $user_id,
 	'stripe_id' => $charge->id,
 	'description' => $_POST['description'],
 	'amount' => $_POST['amount'],
 	'plan' => '',
 	'ts' => gmdate ('Y-m-d H:i:s'),
 	'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
-	'type' => 'payment'
+	'type' => 'payment',
+	'email' => $_POST['stripeEmail']
 ));
 if (! $p->put ()) {
 	// Handle error
@@ -53,7 +60,7 @@ if (! $p->put ()) {
 
 // Redirect if they've provided one
 if (isset ($_POST['redirect']) && strlen ($_POST['redirect']) !== 0) {
-	$this->redirect ($_POST['redirect']);
+	$this->redirect (sprintf ($_POST['redirect'], $p->id));
 }
 
 // Send to a charge handler, if set

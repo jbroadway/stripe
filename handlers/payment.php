@@ -226,7 +226,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 
 	// Redirect if they've provided one
 	if (isset ($data['redirect'])) {
-		$form->controller->redirect ($data['redirect']);
+		$form->controller->redirect (sprintf ($data['redirect'], $p->id));
 	}
 
 	// Send to a charge handler, if set
