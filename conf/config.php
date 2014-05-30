@@ -43,6 +43,6 @@ handler = stripe/index
 name = Stripe Payments
 install = stripe/install
 upgrade = stripe/upgrade
-version = 0.4.0-beta
+version = 0.5.0-beta
 
 ; */ ?>
