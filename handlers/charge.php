@@ -9,7 +9,7 @@
  */
 
 // Verify that they're on an SSL connection
-//$this->force_https ();
+$this->force_https ();
 
 // Initialize the Stripe API
 $this->run ('stripe/init');
@@ -49,7 +49,19 @@ $p = new stripe\Payment (array (
 	'ts' => gmdate ('Y-m-d H:i:s'),
 	'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
 	'type' => 'payment',
-	'email' => $_POST['stripeEmail']
+	'email' => $_POST['stripeEmail'],
+	'billing_name' => isset ($_POST['stripeBillingName']) ? $_POST['stripeBillingName'] : '',
+	'billing_address' => isset ($_POST['stripeBillingAddressLine1']) ? $_POST['stripeBillingAddressLine1'] : '',
+	'billing_city' => isset ($_POST['stripeBillingAddressCity']) ? $_POST['stripeBillingAddressCity'] : '',
+	'billing_state' => isset ($_POST['stripeBillingAddressState']) ? $_POST['stripeBillingAddressState'] : '',
+	'billing_country' => isset ($_POST['stripeBillingAddressCountry']) ? $_POST['stripeBillingAddressCountry'] : '',
+	'billing_zip' => isset ($_POST['stripeBillingAddressZip']) ? $_POST['stripeBillingAddressZip'] : '',
+	'shipping_name' => isset ($_POST['stripeShippingName']) ? $_POST['stripeShippingName'] : '',
+	'shipping_address' => isset ($_POST['stripeShippingAddressLine1']) ? $_POST['stripeShippingAddressLine1'] : '',
+	'shipping_city' => isset ($_POST['stripeShippingAddressCity']) ? $_POST['stripeShippingAddressCity'] : '',
+	'shipping_state' => isset ($_POST['stripeShippingAddressState']) ? $_POST['stripeShippingAddressState'] : '',
+	'shipping_country' => isset ($_POST['stripeShippingAddressCountry']) ? $_POST['stripeShippingAddressCountry'] : '',
+	'shipping_zip' => isset ($_POST['stripeShippingAddressZip']) ? $_POST['stripeShippingAddressZip'] : ''
 ));
 if (! $p->put ()) {
 	// Handle error

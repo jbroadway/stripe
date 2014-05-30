@@ -17,16 +17,16 @@ if ($appconf['Admin']['version'] === '0.5.0-beta') {
 		"alter table #prefix#payment add column email char(72) not null default ''",
 		"alter table #prefix#payment add column billing_name char(72) not null default ''",
 		"alter table #prefix#payment add column billing_address char(72) not null default ''",
-		"alter table #prefix#payment add column billing_address2 char(72) not null default ''",
 		"alter table #prefix#payment add column billing_city char(72) not null default ''",
 		"alter table #prefix#payment add column billing_state char(72) not null default ''",
 		"alter table #prefix#payment add column billing_country char(72) not null default ''",
+		"alter table #prefix#payment add column billing_zip char(72) not null default ''",
 		"alter table #prefix#payment add column shipping_name char(72) not null default ''",
 		"alter table #prefix#payment add column shipping_address char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_address2 char(72) not null default ''",
 		"alter table #prefix#payment add column shipping_city char(72) not null default ''",
 		"alter table #prefix#payment add column shipping_state char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_country char(72) not null default ''"
+		"alter table #prefix#payment add column shipping_country char(72) not null default ''",
+		"alter table #prefix#payment add column shipping_zip char(72) not null default ''"
 	);
 
 	DB::beginTransaction ();
