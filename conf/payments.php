@@ -1,5 +1,4 @@
-; <?php
-
+; <?php /*
 ; This declares that the stripe/payments handler should be included
 ; as "Stripe Payments" in the list of available payment handlers in
 ; Elefant. For documentation on the fields expected of a payment
