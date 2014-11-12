@@ -4,13 +4,13 @@
 	<tr>
 		<th class="payment-desc">{"Description"}</th>
 		<th class="payment-date">{"Date"}</th>
-		<th class="payment-amt">{"Amount"}</th>
+		<th class="payment-amt">{"Total"}</th>
 	</tr>
 {% foreach history as _payment %}
 	<tr>
 		<td class="payment-desc">{{_payment->description|stripe\Util::description_length}}</td>
 		<td class="payment-date">{{_payment->ts|I18n::date_time}}</td>
-		<td class="payment-amt">{{_payment->amount|stripe\Util::money_format}}</td>
+		<td class="payment-amt">${{_payment->amount|stripe\Util::money_format}}</td>
 	</tr>
 {% end %}
 </table>
