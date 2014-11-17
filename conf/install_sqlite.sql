@@ -20,7 +20,8 @@ create table #prefix#payment (
 	shipping_city char(72) not null default '',
 	shipping_state char(72) not null default '',
 	shipping_country char(72) not null default '',
-	shipping_zip char(72) not null default ''
+	shipping_zip char(72) not null default '',
+	coupon char(24) not null
 );
 
 create index #prefix#payment_ts on #prefix#payment (ts);
