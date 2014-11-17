@@ -5,7 +5,6 @@ create table #prefix#payment (
 	description char(128) not null,
 	amount int not null,
 	plan char(24) not null,
-	coupon char(24) not null,
 	ts datetime not null,
 	ip int not null,
 	type char(24) not null,
@@ -21,7 +20,8 @@ create table #prefix#payment (
 	shipping_city char(72) not null default '',
 	shipping_state char(72) not null default '',
 	shipping_country char(72) not null default '',
-	shipping_zip char(72) not null default ''
+	shipping_zip char(72) not null default '',
+	coupon char(24) not null
 );
 
 create index #prefix#payment_ts on #prefix#payment (ts);

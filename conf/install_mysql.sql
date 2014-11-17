@@ -5,7 +5,6 @@ create table #prefix#payment (
 	description char(128) not null,
 	amount int not null,
 	plan char(24) not null,
-	plan coupon(24) not null,
 	ts datetime not null,
 	ip int not null,
 	type char(24) not null,
@@ -22,6 +21,7 @@ create table #prefix#payment (
 	shipping_state char(72) not null default '',
 	shipping_country char(72) not null default '',
 	shipping_zip char(72) not null default '',
+	coupon char(24) not null,
 	index (ts),
 	index (user_id, ts),
 	index (stripe_id, ts)
