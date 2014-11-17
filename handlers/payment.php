@@ -17,6 +17,7 @@
  *
  *     echo $this->run ('stripe/payment', array (
  *         'amount' => 1000,
+ *         'show_coupon' => true,
  *         'description' => 'Test payment',
  *         'callback' => function ($charge, $payment) {
  *             info ($charge);
@@ -28,6 +29,7 @@
  *
  *     {! stripe/payment
  *        ?amount=1000
+ *        &show_coupon=true
  *        &description=Test payment
  *        &redirect=/thanks !}
  *
@@ -35,6 +37,7 @@
  *
  *     {! stripe/payment
  *        ?plan=pro
+ *        &show_coupon=true
  *        &redirect=/thanks !}
  */
 
@@ -94,6 +97,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 	// Get the details submitted by the form
 	$existing = (isset ($_POST['existing']) && $_POST['existing'] == 'yes') ? true : false;
 	$token = isset ($_POST['stripeToken']) ? $_POST['stripeToken'] : false;
+	$coupon = $_POST['coupon'];
 
 	// Update payment info if necessary
 	if ($token && ! $existing && $customer_id) {
@@ -129,6 +133,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 		$info = array (
 			'card' => $token,
 			'email' => $user->email,
+			'coupon' => $coupon,
 			'description' => sprintf ('%d: %s', $user->id, $user->name)
 		);
 		if ($plan) {
@@ -173,6 +178,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 				'amount' => $amount, // In cents, e.g., 1000 = $10.00
 				'currency' => $currency,
 				'customer' => $customer_id,
+				'coupon' => $coupon,
 				'description' => $description
 			);
 			$charge = Stripe_Charge::create ($info);
@@ -193,6 +199,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			'stripe_id' => $charge->id,
 			'description' => $description,
 			'amount' => $amount,
+			'coupon' => $coupon,
 			'plan' => '',
 			'ts' => gmdate ('Y-m-d H:i:s'),
 			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
@@ -211,6 +218,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			'stripe_id' => $customer_id,
 			'description' => $description,
 			'amount' => $amount,
+			'coupon' => $coupon,
 			'plan' => $plan,
 			'ts' => gmdate ('Y-m-d H:i:s'),
 			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),

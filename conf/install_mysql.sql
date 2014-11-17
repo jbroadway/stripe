@@ -5,6 +5,7 @@ create table #prefix#payment (
 	description char(128) not null,
 	amount int not null,
 	plan char(24) not null,
+	plan coupon(24) not null,
 	ts datetime not null,
 	ip int not null,
 	type char(24) not null,
