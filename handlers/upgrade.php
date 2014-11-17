@@ -1,49 +1,64 @@
 <?php
 
-$this->require_acl ('admin', 'stripe');
+// keep unauthorized users out
+$this->require_acl ('admin', $this->app);
 
+// set the layout
 $page->layout = 'admin';
 
-if ($this->installed ('stripe', $appconf['Admin']['version']) === true) {
-	$page->title = 'Already up-to-date';
-	echo '<p><a href="/">Home</a></p>';
-	return;
+// get the version and check if the app installed
+$version = Appconf::get ($this->app, 'Admin', 'version');
+$current = $this->installed ($this->app, $version);
+
+if ($current === true) {
+    // app is already installed and up-to-date, stop here
+    $page->title = __ ('Already up-to-date');
+    printf ('<p><a href="/%s/admin">%s</a>', $this->app, __ ('Home'));
+    return;
 }
 
-$page->title = 'Upgrading app: Stripe Payments';
+$page->title = sprintf (
+    '%s: %s',
+    __ ('Upgrading App'),
+    Appconf::get ($this->app, 'Admin', 'name')
+);
 
-if ($appconf['Admin']['version'] === '0.5.0-beta') {
-	$updates = array (
-		"alter table #prefix#payment add column email char(72) not null default ''",
-		"alter table #prefix#payment add column billing_name char(72) not null default ''",
-		"alter table #prefix#payment add column billing_address char(72) not null default ''",
-		"alter table #prefix#payment add column billing_city char(72) not null default ''",
-		"alter table #prefix#payment add column billing_state char(72) not null default ''",
-		"alter table #prefix#payment add column billing_country char(72) not null default ''",
-		"alter table #prefix#payment add column billing_zip char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_name char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_address char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_city char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_state char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_country char(72) not null default ''",
-		"alter table #prefix#payment add column shipping_zip char(72) not null default ''"
-	);
+// grab the database driver
+$conn = conf ('Database', 'master');
+$driver = $conn['driver'];
 
-	DB::beginTransaction ();
-	foreach ($updates as $update) {
-		if (! DB::execute ($update)) {
-			$error = DB::error ();
-			DB::rollback ();
-			printf ('<p class="visible-notice">%s: %s</p>', __ ('Error'), $error);
-			printf ('<p>%s</p>', __ ('Upgrade failed.'));
-			return;
-		}
-	}
-	DB::commit ();
+// check if upgrade script exists and if so, run it
+$base_version = preg_replace ('/-.*$/', '', $version);
+$file = 'apps/' . $this->app . '/conf/upgrade_' . $base_version . '_' . $driver . '.sql';
+if (file_exists ($file)) {
+    // begin the transaction
+    DB::beginTransaction ();
+
+    // parse the database schema into individual queries
+    $sql = sql_split (file_get_contents ($file));
+
+    // execute each query in turn
+    foreach ($sql as $query) {
+        if (! DB::execute ($query)) {
+            // show error and rollback on failures
+            printf (
+                '<p class="visible-notice">%s: %s</p><p>%s</p>',
+                __ ('Error'),
+                DB::error (),
+                __ ('Install failed.')
+            );
+            DB::rollback ();
+            return;
+        }
+    }
+
+    // commit the transaction
+    DB::commit ();
 }
 
-echo '<p>Done.</p>';
+// add your upgrade logic here
 
-$this->mark_installed ('stripe', $appconf['Admin']['version']);
+// mark the new version installed
+$this->mark_installed ($this->app, $version);
 
-?>
+printf ('<p><a href="/%s/admin">%s</a></p>', $this->app, __ ('Done.'));
