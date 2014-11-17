@@ -97,7 +97,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 	// Get the details submitted by the form
 	$existing = (isset ($_POST['existing']) && $_POST['existing'] == 'yes') ? true : false;
 	$token = isset ($_POST['stripeToken']) ? $_POST['stripeToken'] : false;
-	$coupon = $_POST['coupon'];
+	$coupon = isset ($_POST['coupon']) ? $_POST['coupon'] : '';
 
 	// Update payment info if necessary
 	if ($token && ! $existing && $customer_id) {
