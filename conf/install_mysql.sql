@@ -21,6 +21,7 @@ create table #prefix#payment (
 	shipping_state char(72) not null default '',
 	shipping_country char(72) not null default '',
 	shipping_zip char(72) not null default '',
+	coupon char(24) not null,
 	index (ts),
 	index (user_id, ts),
 	index (stripe_id, ts)

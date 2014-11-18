@@ -43,6 +43,13 @@
 	<input type="text" size="4" data-stripe="cvc" />
 </p>
 
+{% if show_coupon %}
+<p>
+	<label>{"Coupon (if any)"}:</label>
+	<input type="text" size="10" name="coupon" />
+</p>
+{% end %}
+
 <p><button type="submit">{"Submit Payment"}</button></p>
 
 </form>
