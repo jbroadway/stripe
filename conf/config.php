@@ -29,13 +29,13 @@ currency = usd
 ; the label) must match a plan you have added to the Stripe
 ; admin dashboard.
 
-basic[label] = Basic
-basic[amount] = 1000
-basic[interval] = monthly
+;basic[label] = Basic
+;basic[amount] = 1000
+;basic[interval] = monthly
 
-pro[label] = Pro
-pro[amount] = 2500
-pro[interval] = monthly
+;pro[label] = Pro
+;pro[amount] = 2500
+;pro[interval] = monthly
 
 [Admin]
 
@@ -43,6 +43,6 @@ handler = stripe/index
 name = Stripe Payments
 install = stripe/install
 upgrade = stripe/upgrade
-version = 0.5.0-beta
+version = 0.6.0-beta
 
 ; */ ?>
