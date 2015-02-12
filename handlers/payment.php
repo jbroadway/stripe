@@ -97,7 +97,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 	// Get the details submitted by the form
 	$existing = (isset ($_POST['existing']) && $_POST['existing'] == 'yes') ? true : false;
 	$token = isset ($_POST['stripeToken']) ? $_POST['stripeToken'] : false;
-	$coupon = isset ($_POST['coupon']) ? $_POST['coupon'] : '';
+	$coupon = isset ($_POST['coupon']) ? $_POST['coupon'] : false;
 
 	// Update payment info if necessary
 	if ($token && ! $existing && $customer_id) {
@@ -133,9 +133,11 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 		$info = array (
 			'card' => $token,
 			'email' => $user->email,
-			'coupon' => $coupon,
 			'description' => sprintf ('%d: %s', $user->id, $user->name)
 		);
+		if ($coupon) {
+			$info['coupon'] = $coupon;
+		}
 		if ($plan) {
 			$info['plan'] = $plan;
 		}
@@ -178,9 +180,11 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 				'amount' => $amount, // In cents, e.g., 1000 = $10.00
 				'currency' => $currency,
 				'customer' => $customer_id,
-				'coupon' => $coupon,
 				'description' => $description
 			);
+			if ($coupon) {
+				$info['coupon'] = $coupon;
+			}
 			$charge = Stripe_Charge::create ($info);
 		} catch (Stripe_CardError $e) {
 			// The card was declined
@@ -199,7 +203,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			'stripe_id' => $charge->id,
 			'description' => $description,
 			'amount' => $amount,
-			'coupon' => $coupon,
+			'coupon' => $coupon ? $coupon : '',
 			'plan' => '',
 			'ts' => gmdate ('Y-m-d H:i:s'),
 			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
@@ -218,7 +222,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			'stripe_id' => $customer_id,
 			'description' => $description,
 			'amount' => $amount,
-			'coupon' => $coupon,
+			'coupon' => $coupon ? $coupon : '',
 			'plan' => $plan,
 			'ts' => gmdate ('Y-m-d H:i:s'),
 			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
