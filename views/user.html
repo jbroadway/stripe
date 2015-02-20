@@ -1,0 +1,50 @@
+{! admin/util/dates !}
+
+<table class="payment-history">
+	<tr>
+		<th class="payment-desc">{"Description"}</th>
+		<th class="payment-type">{"Type"}</th>
+		<th class="payment-plan">{"Plan"}</th>
+		<th class="payment-date">{"Date"}</th>
+		<th class="payment-amt">{"Total"}</th>
+		<th class="payment-link">&nbsp;</th>
+	</tr>
+{% foreach history as _payment %}
+	<tr>
+		<td class="payment-desc">{{_payment->description|stripe\Util::description_length}}</td>
+		<td class="payment-type">{{_payment->type|ucfirst}}</a></td>
+		<td class="payment-plan">{{_payment->plan|stripe\Util::plan_name}}</td>
+		<td class="payment-date">{{_payment->ts|I18n::date_time}}</td>
+		<td class="payment-amt">${{_payment->amount|stripe\Util::money_format}}</td>
+		<td class="payment-link"">
+			{% if _payment->plan !== '' %}
+			<a href="https://manage.stripe.com/customers/{{ _payment->stripe_id }}">{"View on Stripe"} &raquo;</a>
+			{% else %}
+			<a href="https://manage.stripe.com/payments/{{ _payment->stripe_id }}">{"View on Stripe"} &raquo;</a>
+			{% end %}
+		</td>
+	</tr>
+{% end %}
+</table>
+
+<style>
+.payment-history {
+	width: 100%;
+}
+.payment-desc,
+.payment-date {
+	width: 25%;
+}
+.payment-type,
+.payment-plan,
+.payment-total {
+	width: 10%;
+}
+.payment-total {
+	text-align: right;
+}
+.payment-link {
+	width: 15%;
+	text-align: right;
+}
+</style>
