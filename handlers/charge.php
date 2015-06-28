@@ -9,7 +9,9 @@
  */
 
 // Verify that they're on an SSL connection
-$this->force_https ();
+if (! conf ('General', 'debug')) {
+	$this->force_https ();
+}
 
 // Initialize the Stripe API
 $this->run ('stripe/init');
