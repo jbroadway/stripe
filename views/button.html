@@ -9,6 +9,7 @@
 		data-amount="{{amount|str_replace ('.', '', %s)}}"
 		data-description="{{description}}"
 		data-label="{{button}}"
-		{% if address === 'Yes' %}data-shipping-address="true"{% end %}
+		{% if address === 'Yes' %}data-shipping-address="true"{% end %} 
+		{% if User::is_valid () %}data-email="{{User::val ('email')}}"{% end %} 
 	></script>
 </form>
