@@ -61,6 +61,17 @@ class Util {
 			? substr ($desc, 0, 25) . '...'
 			: $desc;
 	}
+	
+	/**
+	 * Creates links to orders if the description is in the format "Order #123",
+	 * otherwise crops it via `description_length`.
+	 */
+	public static function description ($payment_id, $desc) {
+		if (preg_match ('/^Order #([0-9]+)$/', $desc, $regs)) {
+			return '<a href="/products/order/' . $payment_id . '/' . $regs[1] . '/completed">' . $desc . '</a>';
+		}
+		return self::description_length ($desc);
+	}
 }
 
 ?>
