@@ -113,7 +113,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 		}
 	}
 
-	$amount = $data['amount'];
+	$amount = (int) $data['amount'];
 	$description = $data['description'];
 	$currency = Appconf::stripe ('Stripe', 'currency');
 	$plan = isset ($data['plan']) ? $data['plan'] : false;
