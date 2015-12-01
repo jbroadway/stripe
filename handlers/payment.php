@@ -127,7 +127,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			return;
 		}
 		$description = $details['label'];
-		$amount = $details['amount'];
+		$amount = (int) $details['amount'];
 	}
 
 	if (! $customer_id) {
