@@ -18,6 +18,10 @@ charge_handler = ""
 
 webhook_handler = ""
 
+; A secret key for validating stripe/webhook calls.
+
+webhook_key = ""
+
 ; The default currency for payments (e.g., usd, cad, gbp, eur).
 
 currency = usd

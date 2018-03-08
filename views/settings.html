@@ -29,6 +29,9 @@
 <input type="text" name="webhook_handler" size="40" value="{{ webhook_handler|quotes }}" />
 <span class="notice" id="webhook_handler-notice">{"You must enter a valid handler name."}</span></p>
 
+<p>{"Webhook secret key"}:<br />
+<input type="text" name="webhook_key" size="40" value="{{ webhook_key|quotes }}" /></p>
+
 <h4>{"Subscription Plans"}</h4>
 
 <input type="hidden" name="plans" id="plans" value="{{ plans|json_encode|quotes }}" />
