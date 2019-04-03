@@ -208,7 +208,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			'coupon' => $coupon ? $coupon : '',
 			'plan' => '',
 			'ts' => gmdate ('Y-m-d H:i:s'),
-			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
+			'ip' => ip2long ($form->controller->remote_addr ()),
 			'type' => 'payment'
 		));
 		if (! $p->put ()) {
@@ -227,7 +227,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			'coupon' => $coupon ? $coupon : '',
 			'plan' => $plan,
 			'ts' => gmdate ('Y-m-d H:i:s'),
-			'ip' => ip2long ($_SERVER['REMOTE_ADDR']),
+			'ip' => ip2long ($form->controller->remote_addr ()),
 			'type' => 'subscription'
 		));
 		if (! $p->put ()) {
