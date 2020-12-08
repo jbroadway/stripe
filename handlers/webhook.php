@@ -12,7 +12,7 @@
 
 $page->layout = false;
 
-$this->run ('stripe/init');
+$stripe = $this->run ('stripe/init');
 
 // Get data and make sure it's okay
 $data = $this->get_put_data ();
@@ -23,7 +23,7 @@ if ($event === null) {
 
 // Retrieve the original event for added security
 try {
-	$event = Stripe_Event::retrieve ($event->id);
+	$event = $stripe->events->retrieve ($event->id);
 } catch (Exception $e) {
 	return;
 }

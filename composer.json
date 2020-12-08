@@ -16,6 +16,7 @@
         {"type": "git", "url": "http://github.com/jbroadway/elefant_installer"}
     ],
     "require": {
-        "elefant/app-installer": "*"
+        "elefant/app-installer": "*",
+        "stripe/stripe-php": "^7.33.0"
     }
 }

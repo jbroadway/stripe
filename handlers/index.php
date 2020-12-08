@@ -1,8 +1,7 @@
 <?php
 
 /**
- * This is the default admin area, which currently
- * just redirects to the settings form.
+ * This is the default admin area.
  */
 
 $this->require_acl ('admin', 'stripe');

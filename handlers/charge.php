@@ -14,23 +14,23 @@ if (! conf ('General', 'debug')) {
 }
 
 // Initialize the Stripe API
-$this->run ('stripe/init');
+$stripe = $this->run ('stripe/init');
 
 // Perform the charge
 try {
-	$charge = Stripe_Charge::create (array (
+	$charge = $stripe->charges->create (array (
 		'card' => $_POST['stripeToken'],
 		'amount' => $_POST['amount'],
 		'description' => $_POST['description'],
 		'currency' => isset ($_POST['currency']) ? $_POST['currency'] : Appconf::stripe ('Stripe', 'currency')
 	));
-} catch (Stripe_CardError $e) {
+} catch (\Stripe\Exception\CardException $e) {
 	// The card was declined
 	echo $this->error (412, 'Card declined', 'Your card was declined. Please go back and verify your information.');
 	return;
 } catch (Exception $e) {
 	// Handle error
-	error_log ('Error saving stripe_charge: ' . $e->getMessage ());
+	error_log ('Error saving Stripe charge: ' . $e->getMessage ());
 	echo $this->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
 	return;
 }

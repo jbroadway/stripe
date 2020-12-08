@@ -58,7 +58,7 @@ You can access the Stripe API, pre-initialized with your Stripe credentials, by 
 calling the `stripe/init` handler:
 
 ```
-$this->run ('stripe/init');
+$stripe = $this->run ('stripe/init');
 ```
 
 You now have access to the full Stripe PHP library in your Elefant applications.
@@ -122,8 +122,8 @@ and in your Stripe settings.
 
 After creating the charge via the `stripe/button` handler, the app can call a
 custom charge handler script that you set in the Stripe Payments settings form.
-This script will receive a `$data['charge']` parameter which is the `Stripe_Charge`
-object returned from calling `Stripe_Charge::create()`, which you can then use
+This script will receive a `$data['charge']` parameter which is the `Stripe\Charge`
+object returned from calling `$stripe->charges->create()`, which you can then use
 to take action on new payments in your app, such as offering a digital file download.
 
 The script will also receive a `$data['payment']` parameter which is the
@@ -147,8 +147,8 @@ info ($data['payment']);
 Stripe can be configured to send notifications back to your site whenever an event
 occurs, such as refunding a payment, or creating a new customer account. You can
 set the webhooks handler in the Stripe Payments settings form. This script will
-receive a `$data['event']` parameter which is the `Stripe_Event` object returned
-from calling `Stripe_Event::retrieve()`, which you can then use to take action
+receive a `$data['event']` parameter which is the `Stripe\Event` object returned
+from calling `$stripe->events->retrieve()`, which you can then use to take action
 on the event that occurred, such as logging activity or disabling accounts after
 too many failed billing attempts.
 

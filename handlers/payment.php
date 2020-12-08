@@ -50,7 +50,7 @@ if (! conf ('General', 'debug')) {
 $this->require_login ();
 
 // Initialize the Stripe API
-$this->run ('stripe/init');
+$stripe = $this->run ('stripe/init');
 
 $page->add_style ('/apps/stripe/css/payment.css');
 $page->add_script ('<script src="https://js.stripe.com/v2/"></script>');
@@ -65,10 +65,10 @@ $user = User::current ();
 $customer_id = $user->ext ('stripe_customer');
 if ($customer_id) {
 	try {
-		$customer = Stripe_Customer::retrieve ($customer_id);
+		$customer = $stripe->customers->retrieve ($customer_id);
 	} catch (Exception $e) {
 		// Handle error
-		error_log ('Error calling Stripe_Customer::retrieve(): ' . $e->getMessage ());
+		error_log ('Error calling retrieving customer: ' . $e->getMessage ());
 		echo $this->error (500, 'An error occurred', 'Unable to retrieve customer info at this time. Please try again later.');
 		return;
 	}
@@ -144,10 +144,10 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			$info['plan'] = $plan;
 		}
 		try {
-			$customer = Stripe_Customer::create ($info);
+			$customer = $stripe->customers->create ($info);
 		} catch (Exception $e) {
 			// Handle error
-			error_log ('Error calling Stripe_Customer::create(): ' . $e->getMessage ());
+			error_log ('Error creating Stripe customer: ' . $e->getMessage ());
 			echo $form->controller->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
 			return;
 		}
@@ -156,7 +156,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 		$user->ext ('stripe_customer', $customer->id);
 		if (! $user->put ()) {
 			// Handle error
-			error_log ('Error saving stripe_customer: ' . $user->error);
+			error_log ('Error saving Stripe customer: ' . $user->error);
 			echo $form->controller->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
 			return;
 		}
@@ -169,7 +169,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			}
 		} catch (Exception $e) {
 			// Handle error
-			error_log ('Error calling Stripe_Customer::retrieve(): ' . $e->getMessage ());
+			error_log ('Error updating subscription plan: ' . $e->getMessage ());
 			echo $form->controller->error (500, 'An error occurred', 'Unable to retrieve customer info at this time. Please try again later.');
 			return;
 		}
@@ -187,14 +187,14 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			if ($coupon) {
 				$info['coupon'] = $coupon;
 			}
-			$charge = Stripe_Charge::create ($info);
-		} catch (Stripe_CardError $e) {
+			$charge = $stripe->charges->create ($info);
+		} catch (\Stripe\Exception\CardException $e) {
 			// The card was declined
 			$form->data['charge_failed'] = true;
 			return false;
 		} catch (Exception $e) {
 			// Handle error
-			error_log ('Error saving stripe_charge: ' . $e->getMessage ());
+			error_log ('Error saving Stripe charge: ' . $e->getMessage ());
 			echo $form->controller->error (500, 'An error occurred', 'Unable to save customer info at this time. Please try again later.');
 			return;
 		}
