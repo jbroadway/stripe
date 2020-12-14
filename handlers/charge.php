@@ -19,7 +19,7 @@ $stripe = $this->run ('stripe/init');
 // Perform the charge
 try {
 	$charge = $stripe->charges->create (array (
-		'card' => $_POST['stripeToken'],
+		'source' => $_POST['stripeToken'],
 		'amount' => $_POST['amount'],
 		'description' => $_POST['description'],
 		'currency' => isset ($_POST['currency']) ? $_POST['currency'] : Appconf::stripe ('Stripe', 'currency')

@@ -104,7 +104,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 	// Update payment info if necessary
 	if ($token && ! $existing && $customer_id) {
 		try {
-			$customer->card = $token;
+			$customer->source = $token;
 			$customer->save ();
 		} catch (Exception $e) {
 			error_log ('Error saving new payment info: ' . $e->getMessage ());
@@ -133,7 +133,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 	if (! $customer_id) {
 		// Create a customer with Stripe
 		$info = array (
-			'card' => $token,
+			'source' => $token,
 			'email' => $user->email,
 			'description' => sprintf ('%d: %s', $user->id, $user->name)
 		);
