@@ -24,7 +24,7 @@ class Util {
 	 * Convert currency into display format.
 	 */
 	public static function money_format ($cents) {
-		return money_format ('%^!n', $cents / 100);
+		return number_format ($cents / 100, 2);
 	}
 	
 	/**
