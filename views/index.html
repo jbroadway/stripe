@@ -34,7 +34,7 @@
 		<td><a href="mailto:{{ loop_value->email }}">{{ loop_value->user_name|stripe\Util::user_name }}</a></td>
 		<td>{{ loop_value->ip|long2ip }}</td>
 		<td>{{ loop_value->ts|I18n::date_time }}</td>
-		<td style="text-align: right">${{ loop_value->amount|stripe\Util::money_format}}</td>
+		<td style="text-align: right">{{ loop_value->amount|stripe\Util::money_format}}</td>
 		<td style="text-align: right">
 			{% if loop_value->plan !== '' %}
 			<a href="https://manage.stripe.com/customers/{{ loop_value->stripe_id }}">{"View on Stripe"} &raquo;</a>

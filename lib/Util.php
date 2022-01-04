@@ -2,10 +2,14 @@
 
 namespace stripe;
 
+use NumberFormatter;
+
 /**
  * Utility methods for the Stripe app.
  */
 class Util {
+	private static $numberFormatter = null;
+	
 	/**
 	 * Fetch a list of valid button labels.
 	 */
@@ -24,7 +28,10 @@ class Util {
 	 * Convert currency into display format.
 	 */
 	public static function money_format ($cents) {
-		return number_format ($cents / 100, 2);
+		if (self::$numberFormatter === null) {
+			self::$numberFormatter = new NumberFormatter ('en_US', NumberFormatter::CURRENCY);
+		}
+		return self::$numberFormatter->formatCurrency ($cents / 100, 'USD');
 	}
 	
 	/**

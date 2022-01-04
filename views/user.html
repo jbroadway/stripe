@@ -15,7 +15,7 @@
 		<td class="payment-type">{{_payment->type|ucfirst}}</a></td>
 		<td class="payment-plan">{{_payment->plan|stripe\Util::plan_name}}</td>
 		<td class="payment-date">{{_payment->ts|I18n::date_time}}</td>
-		<td class="payment-amt">${{_payment->amount|stripe\Util::money_format}}</td>
+		<td class="payment-amt">{{_payment->amount|stripe\Util::money_format}}</td>
 		<td class="payment-link"">
 			{% if _payment->plan !== '' %}
 			<a href="https://manage.stripe.com/customers/{{ _payment->stripe_id }}">{"View on Stripe"} &raquo;</a>

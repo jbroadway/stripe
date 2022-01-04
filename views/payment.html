@@ -3,7 +3,7 @@
 <p class="payment-summary">
 	<span class="payment-description">{% if plan %}{"Plan"}: {% end %}{{description}}</span>
 	<span class="payment-amount">
-		${{amount|stripe\Util::money_format}}{% if interval %} {{interval}}{% end %}
+		{{amount|stripe\Util::money_format}}{% if interval %} {{interval}}{% end %}
 	</span>
 </p>
 
