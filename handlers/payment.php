@@ -108,7 +108,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			$customer->save ();
 		} catch (Exception $e) {
 			error_log ('Error saving new payment info: ' . $e->getMessage ());
-			echo $this->error (500, 'An error occurred', 'Unable to update payment info at this time. Please try again later.');
+			echo $form->controller->error (500, 'An error occurred', 'Unable to update payment info at this time. Please try again later.');
 			return;
 		}
 	}
@@ -256,7 +256,7 @@ echo $form->handle (function ($form) use ($data, $page, $tpl, $user, $customer, 
 			return;
 		}
 		// Treat as a handler
-		echo $this->run (
+		echo $form->controller->run (
 			$data['callback'],
 			array (
 				'charge' => $charge,
